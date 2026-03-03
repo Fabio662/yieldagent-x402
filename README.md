@@ -1,4 +1,4 @@
-# YieldAgent x402 — Verifiable Execution Markets
+ YieldAgent x402 — Verifiable Execution Markets
 
 ## Chains (Live)
 
@@ -28,7 +28,7 @@
 
 **Incentive layer** — Partners keep 95–99.5% of revenue (tier-based). Solvers earn on execution; stake-to-earn aligns incentives.
 
-**Discovery endpoint** — Public, free: `GET /api/solvers`. Agents pick the cheapest/fastest. x402 discovery at `/.well-known/x402`.
+**Discovery endpoints** — Public, free: `GET /api/solvers`. x402 at `/.well-known/x402`. A2A (ERC-8004) at `/.well-known/agent-registration.json`. Agents pick the cheapest/fastest.
 
 ---
 
@@ -141,7 +141,11 @@ CORS_ALLOWED_ORIGINS=https://yieldagentx402.app
 ## Deploy
 
 ```bash
-wrangler deploy
+# Gateway (yieldagent-gateway-v2) — use explicit config to avoid migration 10074
+npx wrangler deploy --config yieldagent-api-gateway/wrangler.jsonc
+
+# Landing
+npx wrangler deploy --config yieldagent-landing/wrangler.jsonc
 ```
 
 ## Verify live
@@ -149,11 +153,18 @@ wrangler deploy
 # Health — should show all 21 live, verifyMode: live, verifyUrl: tee-brain-inferred
 curl https://api.yieldagentx402.app/health
 
-# x402 discovery — both rails should appear
+# x402 discovery — both rails should appear (landing mirrors: yieldagentx402.app/.well-known/x402)
 curl https://api.yieldagentx402.app/.well-known/x402
+
+# A2A / ERC-8004 agent registration — auto-discoverable via landing <link> tags
+curl https://api.yieldagentx402.app/.well-known/agent-registration.json
+curl https://yieldagentx402.app/.well-known/agent-registration.json
 
 # TEE report
 curl https://api.yieldagentx402.app/api/tee/report
+
+# Agents (hub registry)
+curl https://api.yieldagentx402.app/api/agents
 
 # Solvers (register your first real solver)
 curl -X POST https://api.yieldagentx402.app/api/solvers/register \
@@ -170,6 +181,31 @@ curl -X POST https://api.yieldagentx402.app/api/solvers/register \
 3. Verifier returns `{ ok: true }` or `{ valid: true }` or `{ verified: true }`
 4. Gateway passes request through to handler
 5. Response returned to client
+
+---
+
+## A2A (Agent-to-Agent) Registration
+
+**ERC-8004** — Agent identity card for agent-to-agent discovery. Crawlable by 8004scan and other agent registries.
+
+| Property | Value |
+|----------|-------|
+| **Endpoint** | `GET /.well-known/agent-registration.json` |
+| **Spec** | [EIP-8004](https://eips.ethereum.org/EIPS/eip-8004) registration v1 |
+| **Auth** | None (public) |
+| **Cache** | `max-age=3600` |
+
+**Response includes:** `type`, `name`, `description`, `services` (web, x402, API, A2A, agents, reputation, yields), `x402Support`, `registrations` (ERC-8004 agent ID on Base L2), `supportedTrust` (tee-attestation, reputation).
+
+**Auto-discovery:** Landing page embeds `<link rel="alternate">` in HTML and HTTP `Link` headers. Both domains serve the same content.
+
+```bash
+# Gateway
+curl https://api.yieldagentx402.app/.well-known/agent-registration.json
+
+# Landing (proxied)
+curl https://yieldagentx402.app/.well-known/agent-registration.json
+```
 
 ---
 
