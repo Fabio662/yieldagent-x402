@@ -31,7 +31,7 @@
 - **Sei** — Clovis  
 - **15 EVM networks** — Ethereum, Arbitrum, Optimism, Polygon, BNB, Avalanche, Linea, Scroll, zkSync, Mantle, Mode, Blast  
 
-*DM if your chain isn't listed — it's probably next.*
+
 
 ---
 
