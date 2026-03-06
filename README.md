@@ -1,4 +1,19 @@
- YieldAgent x402 — Verifiable Execution Markets
+# YieldAgent x402 — Verifiable Execution Markets
+
+**TEE-secured execution marketplace for DeFi intents and AI-agent capital routing.** Solvers compete with crypto-bound proofs; settlements verified on 21+ chains (Bitcoin, Stacks, NEAR, Sui, Solana, TRON, 15 EVM). Dual payment: x402 micropayments + any native chain. [Live](https://yieldagentx402.app) · [API](https://api.yieldagentx402.app)
+
+---
+
+## Quick Links
+
+| Resource | URL |
+|----------|-----|
+| **Live site** | https://yieldagentx402.app |
+| **API / Health** | https://api.yieldagentx402.app/health |
+| **x402 discovery** | https://api.yieldagentx402.app/.well-known/x402 |
+| **A2A / ERC-8004** | https://api.yieldagentx402.app/.well-known/agent-registration.json |
+
+---
 
 ## Chains (Live)
 
@@ -141,7 +156,7 @@ CORS_ALLOWED_ORIGINS=https://yieldagentx402.app
 ## Deploy
 
 ```bash
-# Gateway (yieldagent-gateway-v2) — use explicit config to avoid migration 10074
+# Gateway (yieldagent-api-gateway) — use explicit config to avoid migration 10074
 npx wrangler deploy --config yieldagent-api-gateway/wrangler.jsonc
 
 # Landing
