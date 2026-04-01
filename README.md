@@ -3,7 +3,7 @@
 **TEE-secured execution marketplace for DeFi intents and AI-agent capital routing.** Solvers compete with crypto-bound proofs; settlements are verified across many chains (Bitcoin-related rails, Stacks, NEAR, Sui, Solana, TRON, multiple EVMs, and more). **Dual payment story:** x402 micropayments plus native-chain settlement where each rail supports it.
 **Live:** [yieldagentx402.app](https://yieldagentx402.app) · **API:** [api.yieldagentx402.app](https://api.yieldagentx402.app)
 ---
-## Repository (this monorepo)
+## Repository 
 
 Worker	Domain
 #	Folder	Notes
