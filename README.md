@@ -31,6 +31,7 @@ Worker	Domain
 22	sui-agent-worker	cron
 23	starknet-agent-worker	cron
 24	xrp-agent-worker	cron
+
 Quick links
 Resource	URL
 Live site	https://yieldagentx402.app
@@ -53,6 +54,7 @@ yieldagent-api-gateway/src/
   x402.js                ← Payment verification + discovery
   adapters.js            ← Protocol adapters
   intent-auction-do.js   ← Durable Object for intent auctions
+
 Security fixes (index / x402 references)
 ID	Description
 FIX-1	x402 verify wired to TEE brain — strict trust contract on verifier response
@@ -69,6 +71,7 @@ FIX-11	Zero-enclave guard on TEE verify + report
 FIX-12	BitcoinOS quote does not leak upstream URL
 FIX-13	safeJsonBody on sensitive POST routes
 FIX-14	Solver register input clamped/sanitized before KV write
+
 Environment variables
 Live x402 (examples — match your wrangler)
 X402_BASE_PAYTO=0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1
@@ -91,6 +94,7 @@ Secrets (Wrangler)
 wrangler secret put ADMIN_KEY
 wrangler secret put INTERNAL_SHARED_KEY
 wrangler secret put X402_VERIFY_API_KEY
+
 Integrations (examples)
 LAYERZERO_ENABLED=true
 LAYERZERO_QUOTE_URL=<your lz quote endpoint>
