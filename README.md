@@ -6,7 +6,7 @@
 ## Repository 
 
 Worker	Domain
-#	Folder	Notes
+
 1	agent402	agent.yieldagentx402.app
 2	yieldagent-api-gateway	api.yieldagentx402.app
 3	yieldagent-landing	yieldagentx402.app
@@ -34,10 +34,19 @@ Worker	Domain
 
 Quick links
 Resource	URL
+GET  /api/dao/info
+GET  /api/dao/proposals
+POST /api/dao/proposals          (x-admin-key required)
+GET  /api/dao/proposals/:id
+POST /api/dao/proposals/:id/vote (X-User-Address required)
+
 Live site	https://yieldagentx402.app
 API / health	https://api.yieldagentx402.app/health
 x402 discovery	https://api.yieldagentx402.app/.well-known/x402
 A2A / ERC-8004	https://api.yieldagentx402.app/.well-known/agent-registration.json
+
+
+
 Chains (live)
 The exact live adapter counts are returned by GET /health (adapters.total, enabled, live, etc.). Treat any fixed number in marketing copy as illustrative unless you attach a current /health snapshot.
 
