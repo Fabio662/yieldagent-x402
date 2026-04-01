@@ -58,6 +58,7 @@ TEE + attestation — Sensitive paths are designed for TEE-backed verification a
 Discovery — Public: GET /api/solvers. x402: /.well-known/x402. Agents / A2A: /.well-known/agent-registration.json.
 
 Gateway layout
+
 yieldagent-api-gateway/src/
   index.js               ← Main gateway (entry)
   x402.js                ← Payment verification + discovery
