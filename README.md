@@ -1,88 +1,76 @@
+
 # YieldAgent x402 — Verifiable Execution Markets
-
-**TEE-secured execution marketplace for DeFi intents and AI-agent capital routing.** Solvers compete with crypto-bound proofs; settlements verified on 21+ chains (Bitcoin, Stacks, NEAR, Sui, Solana, TRON, 15 EVM). Dual payment: x402 micropayments + any native chain. [Live](https://yieldagentx402.app) · [API](https://api.yieldagentx402.app)
-
+**TEE-secured execution marketplace for DeFi intents and AI-agent capital routing.** Solvers compete with crypto-bound proofs; settlements are verified across many chains (Bitcoin-related rails, Stacks, NEAR, Sui, Solana, TRON, multiple EVMs, and more). **Dual payment story:** x402 micropayments plus native-chain settlement where each rail supports it.
+**Live:** [yieldagentx402.app](https://yieldagentx402.app) · **API:** [api.yieldagentx402.app](https://api.yieldagentx402.app)
 ---
+## Repository (this monorepo)
 
-## Quick Links
+Worker	Domain
+#	Folder	Notes
+1	agent402	agent.yieldagentx402.app
+2	yieldagent-api-gateway	api.yieldagentx402.app
+3	yieldagent-landing	yieldagentx402.app
+4	stacks-compat-worker	stacks-compat.yieldagentx402.app
+5	near-compat-worker	near-compat.yieldagentx402.app
+6	bnb-compat-worker	bnb-compat.yieldagentx402.app
+7	starknet-compat-worker	starknet-compat.yieldagentx402.app
+8	tron-compat-worker	tron-compat.yieldagentx402.app
+9	sui-compat-worker	sui-compat.yieldagentx402.app
+10	solana-compat-worker	solana-compat.yieldagentx402.app
+11	xrp-compat-worker	xrp-compat.yieldagentx402.app
+12	rootstock-compat-worker	rootstock-compat.yieldagentx402.app
+13	tee-signer	tee-signer (see wrangler for host)
+14	btc-yield-proxy	workers.dev / ops base
+15	near-auto-bidder	cron
+16	stacks-x402-worker	stacks.yieldagentx402.app
+17	jingswap-signal-autointent	cron
+18	flippt-agent-worker	cron
+19	kite-agent-worker	cron
+20	0g-agent-worker	cron
+21	tron-agent-worker	cron
+22	sui-agent-worker	cron
+23	starknet-agent-worker	cron
+24	xrp-agent-worker	cron
+Quick links
+Resource	URL
+Live site	https://yieldagentx402.app
+API / health	https://api.yieldagentx402.app/health
+x402 discovery	https://api.yieldagentx402.app/.well-known/x402
+A2A / ERC-8004	https://api.yieldagentx402.app/.well-known/agent-registration.json
+Chains (live)
+The exact live adapter counts are returned by GET /health (adapters.total, enabled, live, etc.). Treat any fixed number in marketing copy as illustrative unless you attach a current /health snapshot.
 
-| Resource | URL |
-|----------|-----|
-| **Live site** | https://yieldagentx402.app |
-| **API / Health** | https://api.yieldagentx402.app/health |
-| **x402 discovery** | https://api.yieldagentx402.app/.well-known/x402 |
-| **A2A / ERC-8004** | https://api.yieldagentx402.app/.well-known/agent-registration.json |
+Representative rails (ecosystem): NEAR, Base (EVM), Solana, BitcoinOS, LayerZero, Sui, Starknet, Tron, Filecoin, Stacks, Bitcoin (Babylon / BitcoinOS), Sei, and many EVM networks.
 
----
+Decentralization
+Solver nodes as peers — Run a solver that bids on intents; stake and reputation align incentives. The hub routes; it does not own solver fleets.
+TEE + attestation — Sensitive paths are designed for TEE-backed verification and attestation workflows (see /api/tee/report and verifier integration).
+Discovery — Public: GET /api/solvers. x402: /.well-known/x402. Agents / A2A: /.well-known/agent-registration.json.
 
-## Chains (Live)
-
-- **NEAR** — Native RPC, intent pipeline, on-chain stake verification  
-- **Base** (EVM) — Lombard, Euler, Katana  
-- **Solana** — Kamino, Jupiter  
-- **BitcoinOS** — ZK bridge (trustless BTC cross-chain)  
-- **LayerZero** — Omnichain messaging  
-- **Sui** — Suilend, Navi, Scallop  
-- **StarkNet** — Endur (candidate)  
-- **Tron** — JustLend  
-- **Filecoin** — GLIF (liquid staking)  
-- **Stacks** — Zest, Hermetica  
-- **Bitcoin** — Babylon, BitcoinOS  
-- **Sei** — Clovis  
-- **15 EVM networks** — Ethereum, Arbitrum, Optimism, Polygon, BNB, Avalanche, Linea, Scroll, zkSync, Mantle, Mode, Blast  
-
-
-
----
-
-## Decentralization
-
-**Solver nodes as peers** — Spin up a solver that bids on intents. Stake NEAR for economic alignment; reputation and settlement verification keep them honest. The hub routes—it doesn't own them.
-
-**TEE + attestation** — Every bid runs in a TEE, is hashed, and verified on-chain. BitcoinOS ZK for trustless BTC bridging. No single point of failure.
-
-**Incentive layer** — Partners keep 95–99.5% of revenue (tier-based). Solvers earn on execution; stake-to-earn aligns incentives.
-
-**Discovery endpoints** — Public, free: `GET /api/solvers`. x402 at `/.well-known/x402`. A2A (ERC-8004) at `/.well-known/agent-registration.json`. Agents pick the cheapest/fastest.
-
----
-
-## Structure
-```
-src/
-  index.js           ← Main gateway (entry point)
-  x402.js            ← Payment verification + discovery
-  adapters.js        ← 21 protocol adapters
-  intent-auction-do.js ← Durable Object for intent auctions
-```
-
----
-
-## Security Fixes Applied
-
-| Fix | Description |
-|-----|-------------|
-| FIX-1 | x402 verify wired to TEE brain agent /verify — no silent pass-through |
-| FIX-2 | `timingSafeEqualAsync` export name matches import in index.js |
-| FIX-3 | KV-backed rate limiting (survives cold starts) |
-| FIX-4 | Partner API keys stored as SHA-256 hash, never plaintext |
-| FIX-5 | CORS locked to configured origins, no wildcard |
-| FIX-6 | Intent create/bid/status/settlement x402-protected |
-| FIX-7 | x402 discovery single source of truth via x402.js |
-| FIX-8 | `fetchJsonDetailed` on LayerZero + Chainlink (real 4xx/5xx, not 500) |
-| FIX-9 | `/api/intents/tick` requires internal/admin auth |
-| FIX-10 | TEE report wired to TEE_REPORT_URL + /attestation fallback |
-| FIX-11 | Zero-enclave guard on TEE verify + report responses |
-| FIX-12 | BitcoinOS quote never leaks upstream URL |
-| FIX-13 | `safeJsonBody` on all POST routes touching secrets/KV |
-| FIX-14 | Solver register: input clamped/sanitized before KV write |
-
----
-
-## Environment Variables
-
-### Required for live x402 payments
-```
+Gateway layout
+yieldagent-api-gateway/src/
+  index.js               ← Main gateway (entry)
+  x402.js                ← Payment verification + discovery
+  adapters.js            ← Protocol adapters
+  intent-auction-do.js   ← Durable Object for intent auctions
+Security fixes (index / x402 references)
+ID	Description
+FIX-1	x402 verify wired to TEE brain — strict trust contract on verifier response
+FIX-2	timingSafeEqualAsync export name matches imports
+FIX-3	KV-backed rate limiting
+FIX-4	Partner API keys stored as SHA-256 hash
+FIX-5	CORS locked to configured origins
+FIX-6	Intent create / bid / status / settlement x402-protected where enforced
+FIX-7	x402 discovery coordinated with x402.js
+FIX-8	fetchJsonDetailed on upstreams (real 4xx/5xx)
+FIX-9	/api/intents/tick requires internal/admin auth
+FIX-10	TEE report wired to TEE_REPORT_URL + attestation fallbacks
+FIX-11	Zero-enclave guard on TEE verify + report
+FIX-12	BitcoinOS quote does not leak upstream URL
+FIX-13	safeJsonBody on sensitive POST routes
+FIX-14	Solver register input clamped/sanitized before KV write
+Environment variables
+Live x402 (examples — match your wrangler)
 X402_BASE_PAYTO=0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1
 X402_BASE_ASSET=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 X402_BASE_CAIP2=eip155:8453
@@ -92,144 +80,68 @@ X402_NEAR_ASSET=near
 X402_NEAR_CAIP2=near:mainnet
 X402_NEAR_AMOUNT=10
 X402_VERIFY_MODE=live
-```
+Verifier URL (read carefully)
+If X402_VERIFY_URL is set → gateway uses that HTTPS URL.
+Else if TEE_BRAIN_URL is set → gateway calls {TEE_BRAIN_URL}/x402/verify (not /verify).
+Optional:
 
-### TEE Integration
-```
 TEE_BRAIN_URL=https://agent.yieldagentx402.app
-# x402 verify auto-wired to TEE_BRAIN_URL/verify if X402_VERIFY_URL not set
-# TEE report auto-wired to TEE_BRAIN_URL/attestation if TEE_REPORT_URL not set
-
-# Optional explicit overrides:
-TEE_VERIFY_URL=https://agent.yieldagentx402.app/verify
-TEE_REPORT_URL=<your attestation endpoint>
-```
-
-### x402 Verify API Key (secret)
-```bash
-wrangler secret put X402_VERIFY_API_KEY
-# Use a new strong secret — NOT the same as INTERNAL_SHARED_KEY
-```
-
-### Secrets (set via wrangler secret put)
-```bash
+TEE_REPORT_URL=<your attestation/report endpoint if not defaulted>
+Secrets (Wrangler)
 wrangler secret put ADMIN_KEY
 wrangler secret put INTERNAL_SHARED_KEY
 wrangler secret put X402_VERIFY_API_KEY
-```
-
-### Integrations
-```
+Integrations (examples)
 LAYERZERO_ENABLED=true
 LAYERZERO_QUOTE_URL=<your lz quote endpoint>
 BITCOINOS_ENABLED=true
-BITCOINOS_QUOTE_URL=<your bitcoinos quote endpoint>   # or AGENT_URL fallback
+BITCOINOS_QUOTE_URL=<your bitcoinos quote endpoint>
 AGENT_URL=https://agent.yieldagentx402.app
 FEDERATION_HUB_ID=hub-yieldagentx402
-CORS_ALLOWED_ORIGINS=https://yieldagentx402.app
-```
+Production CORS_ALLOWED_ORIGINS is usually a comma-separated list of allowed web origins, not a single URL.
 
-### KV Bindings (wrangler.jsonc)
-```jsonc
-"kv_namespaces": [
-  { "binding": "SOLVER_KV",  "id": "<your id>" },
-  { "binding": "PARTNER_KV", "id": "<your id>" },
-  { "binding": "WL_KV",      "id": "<your id>" },
-  { "binding": "RATE_KV",    "id": "<your id>" }
-]
-```
+KV / Durable Objects (wrangler.jsonc)
+Configure SOLVER_KV, PARTNER_KV, WL_KV, RATE_KV, and INTENTS_DO (IntentAuctionDO) per your deployment IDs.
 
-### DO Binding (wrangler.jsonc)
-```jsonc
-"durable_objects": {
-  "bindings": [
-    { "name": "INTENTS_DO", "class_name": "IntentAuctionDO" }
-  ]
-},
-"migrations": [
-  { "tag": "v1", "new_sqlite_classes": ["IntentAuctionDO"] }
-]
-```
 
----
+Verify live
+curl -sS https://api.yieldagentx402.app/health
+curl -sS https://api.yieldagentx402.app/.well-known/x402
+curl -sS https://api.yieldagentx402.app/.well-known/agent-registration.json
+curl -sS https://yieldagentx402.app/.well-known/agent-registration.json
+curl -sS https://api.yieldagentx402.app/api/tee/report
+curl -sS https://api.yieldagentx402.app/api/agents
+curl -sS https://api.yieldagentx402.app/api/solvers
+Health: expect x402.verifyMode (e.g. live) and x402.verifyUrl (explicit | tee-brain-inferred | none) when configured.
 
-## Deploy
+x402 payment flow (live)
+Client sends a payment proof in a supported header: payment-signature, X-PAYMENT, and/or x402-payment.
+Gateway POSTs to X402_VERIFY_URL or {TEE_BRAIN_URL}/x402/verify with the token and bound resource/method context.
+In live mode, payment is accepted only if the verifier returns verified: true and teeAttested: true (both required).
+If accepted, the handler runs; otherwise 402 with payment-required style headers/body.
+Internal service calls may use X-Internal-Key on routes that allow bypass (not a substitute for user micropayments on strict execution routes).
 
-```bash
-# Gateway (yieldagent-api-gateway) — use explicit config to avoid migration 10074
-npx wrangler deploy --config yieldagent-api-gateway/wrangler.jsonc
+Solver registration
+POST /api/solvers/register is listed in x402 discovery: callers must pass valid x402 payment (or use an approved internal path with X-Internal-Key — operations only).
 
-# Landing
-npx wrangler deploy --config yieldagent-landing/wrangler.jsonc
-```
+After payment, registration still requires either:
 
-## Verify live
-```bash
-# Health — should show all 21 live, verifyMode: live, verifyUrl: tee-brain-inferred
-curl https://api.yieldagentx402.app/health
+X-Admin-Key: <ADMIN_KEY>, or
+Authorization: Bearer <agent-token> from a registered agent.
+Do not document “admin key only” without also documenting the payment header (or internal ops flow).
 
-# x402 discovery — both rails should appear (landing mirrors: yieldagentx402.app/.well-known/x402)
-curl https://api.yieldagentx402.app/.well-known/x402
+A2A (ERC-8004)
+Property	Value
+Endpoint	GET /.well-known/agent-registration.json
+Spec	EIP-8004
+Auth	None (public)
+Landing and API both expose registration JSON; HTML may include <link rel="alternate"> for crawlers.
 
-# A2A / ERC-8004 agent registration — auto-discoverable via landing <link> tags
-curl https://api.yieldagentx402.app/.well-known/agent-registration.json
-curl https://yieldagentx402.app/.well-known/agent-registration.json
-
-# TEE report
-curl https://api.yieldagentx402.app/api/tee/report
-
-# Agents (hub registry)
-curl https://api.yieldagentx402.app/api/agents
-
-# Solvers (register your first real solver)
-curl -X POST https://api.yieldagentx402.app/api/solvers/register \
-  -H "X-Admin-Key: $ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"id":"solver_1","chains":["base","near"],"capabilities":["yield","lending"],"stake":"10 NEAR"}'
-```
-
----
-
-## x402 Payment Flow (live)
-1. Client sends request with `x402-payment: <signed_payment_token>` header
-2. Gateway calls `TEE_BRAIN_URL/verify` (or `X402_VERIFY_URL`) with token + context
-3. Verifier returns `{ ok: true }` or `{ valid: true }` or `{ verified: true }`
-4. Gateway passes request through to handler
-5. Response returned to client
-
----
-
-## A2A (Agent-to-Agent) Registration
-
-**ERC-8004** — Agent identity card for agent-to-agent discovery. Crawlable by 8004scan and other agent registries.
-
-| Property | Value |
-|----------|-------|
-| **Endpoint** | `GET /.well-known/agent-registration.json` |
-| **Spec** | [EIP-8004](https://eips.ethereum.org/EIPS/eip-8004) registration v1 |
-| **Auth** | None (public) |
-| **Cache** | `max-age=3600` |
-
-**Response includes:** `type`, `name`, `description`, `services` (web, x402, API, A2A, agents, reputation, yields), `x402Support`, `registrations` (ERC-8004 agent ID on Base L2), `supportedTrust` (tee-attestation, reputation).
-
-**Auto-discovery:** Landing page embeds `<link rel="alternate">` in HTML and HTTP `Link` headers. Both domains serve the same content.
-
-```bash
-# Gateway
-curl https://api.yieldagentx402.app/.well-known/agent-registration.json
-
-# Landing (proxied)
-curl https://yieldagentx402.app/.well-known/agent-registration.json
-```
-
----
-
-## Intent Lifecycle
-```
-POST /api/intents/create  (x402-protected)  → status: open
-POST /api/intents/:id/bid (x402-protected)  → bids accumulate, winner selected
-POST /api/intents/tick    (internal/admin)  → expired intents cleaned up
-POST /api/intents/:id/proof (internal/admin)  → proof attached, status: evaluating
-POST /api/intents/:id/settlement-webhook (x402 + internal/admin) → status: settled|failed
-GET  /api/intents/:id/attestations → view TEE attestations
-```
+Intent lifecycle
+Step	Route	Notes
+Create	POST /api/intents/create	x402-gated
+Bid	POST /api/intents/:id/bid	x402-gated
+Tick	POST /api/intents/tick	internal / admin
+Proof	POST /api/intents/:id/proof	internal / admin
+Settlement	POST /api/intents/:id/settlement or .../settlement-webhook	x402 + internal/admin where enforced
+Attestations	GET /api/intents/:id/attestations	read
