@@ -413,18 +413,6 @@ It is:
 	•	and surfacing public receipts across chains
 
 ⸻
-
-Recommended proof surfaces
-
-When presenting the project, pair big claims with inspectable artifacts:
-	•	validator proof — live operator / validator evidence
-	•	attestation proof — TEE report or verification surface
-	•	auction proof — solver leaderboard / intent outcome
-	•	route proof — executable corridor or adapter-derived route
-	•	settlement proof — chain receipt / final verification artifact
-
-This framing is how the project should be evaluated: not by slogans, but by what can be inspected.
-
 ⸻
 
 Development notes
