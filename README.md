@@ -10,6 +10,8 @@ Agents pay for routes with x402, discover execution surfaces through public mani
 - x402 discovery: https://api.yieldagentx402.app/.well-known/x402
 - ERC-8004 / agent registration: https://api.yieldagentx402.app/.well-known/agent-registration.json
 - ERC-8004 on-chain (Base): agent id **21702** on registry `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` (chain id 8453) — [8004scan](https://8004scan.io/agents/base/21702)
+- ERC-8004 **IPFS / Filecoin** metadata CID: `bafkreiemqsnky7zpsxvgfm5nu5y6zp2jf7z62bssxkznnxzw37isr3ap64` — e.g. `https://ipfs.io/ipfs/bafkreiemqsnky7zpsxvgfm5nu5y6zp2jf7z62bssxkznnxzw37isr3ap64` (content-addressed; retrievable via IPFS gateways and Filecoin-backed paths where pinned)
+- **Tron / registration tooling:** `IPFS_CID=bafkreiemqsnky7zpsxvgfm5nu5y6zp2jf7z62bssxkznnxzw37isr3ap64 node register-8004.mjs` (operator script in your deploy tree — not shipped in this README-only repo)
 
 ---
 
@@ -41,6 +43,7 @@ The goal is simple: let autonomous agents act like economic actors without turni
 | **x402 discovery** | https://api.yieldagentx402.app/.well-known/x402 |
 | **A2A / ERC-8004** | https://api.yieldagentx402.app/.well-known/agent-registration.json |
 | **8004scan (Base agent #21702)** | https://8004scan.io/agents/base/21702 |
+| **IPFS CID (ERC-8004 metadata)** | `bafkreiemqsnky7zpsxvgfm5nu5y6zp2jf7z62bssxkznnxzw37isr3ap64` · [ipfs.io gateway](https://ipfs.io/ipfs/bafkreiemqsnky7zpsxvgfm5nu5y6zp2jf7z62bssxkznnxzw37isr3ap64) |
 | **DAO info** | https://api.yieldagentx402.app/api/dao/info |
 | **DAO proposals** | https://api.yieldagentx402.app/api/dao/proposals |
 | **Whitelabel program (info)** | https://api.yieldagentx402.app/api/whitelabel/info |
