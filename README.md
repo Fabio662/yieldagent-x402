@@ -27,6 +27,74 @@ The goal is simple: let autonomous agents act like economic actors without turni
 
 ---
 
+## Quick Links
+
+| Resource | URL |
+|----------|-----|
+| **Live site** | https://yieldagentx402.app |
+| **Gateway health** | https://api.yieldagentx402.app/health |
+| **Adapter registry health** | https://api.yieldagentx402.app/api/adapters/health |
+| **Platform status (live)** | https://yieldagentx402.app/api/public/platform-status |
+| **Stacks x402 worker health** | https://stacks.yieldagentx402.app/health |
+| **TEE signer health** | https://tee-signer.yieldagentx402.app/health |
+| **x402 discovery** | https://api.yieldagentx402.app/.well-known/x402 |
+| **A2A / ERC-8004** | https://api.yieldagentx402.app/.well-known/agent-registration.json |
+
+---
+
+## Health & status JSON (current contracts)
+
+**Do not hardcode adapter counts or “green” wording in docs** — always read live JSON.
+
+| Surface | Field | Values | Meaning |
+|--------|--------|--------|---------|
+| Gateway `GET /health` | top-level `status` | `operational` \| `degraded` | Platform posture (e.g. kill switches). |
+| Gateway `GET /health` | nested `signer.status` | from tee-signer, often `ok` \| `degraded` \| fallback | Mirrors **tee-signer**; `degraded` can mean missing recent KV signing evidence, not necessarily “down”. Prefer `statusBadge` / `liveVerifiedRecently` on tee-signer when debugging. |
+| `GET /api/adapters/health` | top-level `status` | `operational` \| `degraded` | Registry list fetch succeeded vs degraded. Per-adapter rows keep their **own** `status` fields. |
+| `GET /api/tee/status` | `status` | `operational` \| `degraded` | Derived from tee report success (gateway). |
+| Stacks x402 `GET /health` | `status` | `operational` | Worker liveness (aligned with gateway vocabulary). |
+| Landing `GET /api/public/platform-status` | `healthEndpointSemantics` | object of strings | Operator-facing map of **which endpoint uses which vocabulary** (`gatewayRootHealth`, `adaptersRegistryHealth`, `teeSignerDirect`, `stacksX402Worker`). |
+
+```bash
+curl -sS https://api.yieldagentx402.app/health
+curl -sS https://api.yieldagentx402.app/api/adapters/health
+curl -sS https://yieldagentx402.app/api/public/platform-status
+curl -sS https://stacks.yieldagentx402.app/health
+curl -sS https://tee-signer.yieldagentx402.app/health
+```
+
+---
+
+## Phala Shade Agent signer (autonomous vs human mode)
+
+YieldAgent separates **who holds signing keys** and **whether a human is in the loop** across three layers: the **gateway**, **tee-signer**, and the **Shade Agent** (NEAR + Chain Signatures) when deployed on **Phala** (Intel TDX CVM via dstack).
+
+### What the Shade Agent does
+
+- The **tee-signer** worker (`tee-signer.yieldagentx402.app`) performs managed signing and policy enforcement.
+- When **Phala Shade Agent** integration is enabled (`SHADE_AGENT_ENABLED`), signing for **Chain Signatures** / x402 payment flows can route through a **Phala CVM** over HTTPS (`/api/sign`, `/api/derive-address`). The Shade Agent holds MPC / chain-signature material inside the TEE; **tee-signer does not see private keys** for that path.
+- Configuration lives in **`tee-signer/wrangler.jsonc`** (e.g. `SHADE_AGENT_ENABLED`, `SHADE_AGENT_URL`, `CHAIN_SIGNATURES_ENABLED`, `AGENT_CONTRACT_ID`). The live CVM URL is tied to your Phala deployment and may change after redeploy — update `SHADE_AGENT_URL` (var or secret) accordingly.
+
+### Autonomous mode (production TEE)
+
+- Shade Agent runs on **Phala Cloud** in a **TEE** (Intel TDX), with **attestation** and **registration** against the NEAR agent contract (e.g. `ac-sandbox-yieldagent-x402.near`).
+- Intended for **unattended** automation: agents or services that must sign **without a human per request** (e.g. autonomous x402 pay / “Casper”-style flows), still bounded by **tee-signer policy** (allowed callers, destinations, caps).
+- Verify readiness: `GET https://tee-signer.yieldagentx402.app/health` and, when the Shade Agent is exposed on your custom domain, `GET https://shade-agent.yieldagentx402.app/api/info` (fields such as `agentReady`, `registered`, `agentWhitelisted`, `attestation`).
+
+### Human mode (local / development)
+
+- Shade Agent can run **on a developer machine** (`environment: local` in deployment config): **whitelist**-based, **no production TEE attestation** posture — a **human operator** is expected to be present for development, testing, or manual approval workflows.
+- Use this mode for integration testing; use **Autonomous / TEE** for production unattended signing.
+
+### Gateway: personal vs managed wallet routing (related idea)
+
+- **Personal** wallet paths use the user’s own keys (human- or wallet-controlled).
+- **Managed** paths route to **tee-signer**, where policy + (when configured) **Phala Shade Agent** signing apply — this is the usual stack for **autonomous** execution under operator policy.
+
+For detailed Phala env, sponsor keys, and redeploy steps, see your canonical deploy tree’s `X402_ACTIVATION/PHALA_SHADE_AGENT_SETUP.md` and `X402_ACTIVATION/SHADE_AGENT_NOTES.md` (or equivalent runbooks).
+
+---
+
 ## What is live
 
 The repo and live deployment currently expose:
@@ -136,6 +204,11 @@ YieldAgent x402 combines these into a single execution fabric so agents can requ
 ## Live verification checklist
 
 Use the live endpoints directly.
+
+```bash
+curl -sS https://api.yieldagentx402.app/health
+curl -sS https://api.yieldagentx402.app/api/adapters/health
+curl -sS https://yieldagentx402.app/api/public/platform-status
 curl -sS https://api.yieldagentx402.app/.well-known/x402
 curl -sS https://api.yieldagentx402.app/.well-known/agent-registration.json
 curl -sS https://yieldagentx402.app/.well-known/agent-registration.json
@@ -144,6 +217,7 @@ curl -sS https://api.yieldagentx402.app/api/agents
 curl -sS https://api.yieldagentx402.app/api/solvers
 curl -sS https://api.yieldagentx402.app/api/dao/info
 curl -sS https://api.yieldagentx402.app/api/dao/proposals
+```
 
 x402 payment model
 
@@ -351,10 +425,20 @@ X402_VERIFY_MODE=live
 TEE_BRAIN_URL=https://agent.yieldagentx402.app
 TEE_REPORT_URL=<attestation/report endpoint if not defaulted>
 
+**Managed signing + Phala (tee-signer worker):** production deployments configure **`SHADE_AGENT_ENABLED`**, **`SHADE_AGENT_URL`**, and **`CHAIN_SIGNATURES_ENABLED`** on **tee-signer** so x402 / Chain Signatures signing can use the **Phala Shade Agent** CVM. See [Phala Shade Agent signer (autonomous vs human mode)](#phala-shade-agent-signer-autonomous-vs-human-mode) above.
 
+### x402 Verify API Key (secret)
+```bash
+wrangler secret put X402_VERIFY_API_KEY
+# Use a new strong secret — NOT the same as INTERNAL_SHARED_KEY
+```
+
+### Secrets (set via wrangler secret put)
+```bash
 wrangler secret put ADMIN_KEY
 wrangler secret put INTERNAL_SHARED_KEY
 wrangler secret put X402_VERIFY_API_KEY
+```
 
 Integrations
 LAYERZERO_ENABLED=true
@@ -444,5 +528,21 @@ Proofs are inspectable.
 That is the system.
 
 ### Health
+
 ```bash
-curl -sS https://api.yieldagentx402.app/healthcurl -sS https://api.yieldagentx402.app/.well-known/x402
+curl -sS https://api.yieldagentx402.app/health
+curl -sS https://api.yieldagentx402.app/.well-known/x402
+curl -sS https://api.yieldagentx402.app/api/adapters/health
+curl -sS https://yieldagentx402.app/api/public/platform-status
+curl -sS https://stacks.yieldagentx402.app/health
+curl -sS https://tee-signer.yieldagentx402.app/health
+```
+
+### Example: register a solver
+
+```bash
+curl -sS -X POST https://api.yieldagentx402.app/api/solvers/register \
+  -H "X-Admin-Key: $ADMIN_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"id":"solver_1","chains":["base","near"],"capabilities":["yield","lending"],"stake":"10 NEAR"}'
+```
