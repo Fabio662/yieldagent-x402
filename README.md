@@ -9,6 +9,7 @@ Agents pay for routes with x402, discover execution surfaces through public mani
 - API: https://api.yieldagentx402.app
 - x402 discovery: https://api.yieldagentx402.app/.well-known/x402
 - ERC-8004 / agent registration: https://api.yieldagentx402.app/.well-known/agent-registration.json
+- ERC-8004 on-chain (Base): agent id **21702** on registry `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` (chain id 8453) — [8004scan](https://8004scan.io/agents/base/21702)
 
 ---
 
@@ -39,6 +40,7 @@ The goal is simple: let autonomous agents act like economic actors without turni
 | **TEE signer health** | https://tee-signer.yieldagentx402.app/health |
 | **x402 discovery** | https://api.yieldagentx402.app/.well-known/x402 |
 | **A2A / ERC-8004** | https://api.yieldagentx402.app/.well-known/agent-registration.json |
+| **8004scan (Base agent #21702)** | https://8004scan.io/agents/base/21702 |
 | **DAO info** | https://api.yieldagentx402.app/api/dao/info |
 | **DAO proposals** | https://api.yieldagentx402.app/api/dao/proposals |
 | **Whitelabel program (info)** | https://api.yieldagentx402.app/api/whitelabel/info |
