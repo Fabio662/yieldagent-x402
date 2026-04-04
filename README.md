@@ -39,6 +39,50 @@ The goal is simple: let autonomous agents act like economic actors without turni
 | **TEE signer health** | https://tee-signer.yieldagentx402.app/health |
 | **x402 discovery** | https://api.yieldagentx402.app/.well-known/x402 |
 | **A2A / ERC-8004** | https://api.yieldagentx402.app/.well-known/agent-registration.json |
+| **DAO info** | https://api.yieldagentx402.app/api/dao/info |
+| **DAO proposals** | https://api.yieldagentx402.app/api/dao/proposals |
+| **Whitelabel program (info)** | https://api.yieldagentx402.app/api/whitelabel/info |
+| **Whitelabel requirements** | https://api.yieldagentx402.app/api/whitelabel/requirements |
+| **Public hub directory** | https://api.yieldagentx402.app/api/public/hubs |
+
+---
+
+## DAO governance & Whitelabel hub
+
+### DAO governance
+
+The gateway exposes a **proposal-driven governance API** so parameters and direction can be inspected (and, where authorized, updated) without hiding control behind opaque ops.
+
+| Access | Routes |
+|--------|--------|
+| **Public read** | `GET /api/dao/info` — high-level DAO metadata and status<br>`GET /api/dao/proposals` — list proposals<br>`GET /api/dao/proposals/:id` — single proposal |
+| **Writes** | `POST /api/dao/proposals` — create proposal (requires **`X-Admin-Key`**) <br>`POST /api/dao/proposals/:id/vote` — vote (requires **`X-User-Address`** and downstream policy) |
+
+Proposals and votes are **machine-readable** for auditors and integrators; authorization on write paths follows gateway policy.
+
+```bash
+curl -sS https://api.yieldagentx402.app/api/dao/info
+curl -sS https://api.yieldagentx402.app/api/dao/proposals
+```
+
+### Whitelabel hub program
+
+**Whitelabel** lets partners run a **branded yield-routing hub** on top of the same adapter catalog, solver auction, and TEE-attested execution stack—under **their** domain and commercial terms (tiered revenue share, stake requirements).
+
+| Surface | Purpose |
+|---------|---------|
+| `GET /api/whitelabel/info` | Program name, tier summary (e.g. growth / whale), feature lists, and links to **`register`** and **`requirements`** |
+| `GET /api/whitelabel/requirements` | What a partner must satisfy to onboard |
+| `GET /api/public/hubs` | Public directory of registered hubs (discovery) |
+| Partner-authenticated routes | **Register** a hub, check **status**, **kill** / **restore** a hub, stake **re-verify**, credentials and **webhooks** — all gated with partner auth (API key / HMAC patterns as documented in the live API) |
+
+Operational features include **audit trail**, **kill switch**, **restore** after verified stake, and **lifecycle webhooks** so operators can tie hub state to their own systems.
+
+```bash
+curl -sS https://api.yieldagentx402.app/api/whitelabel/info
+curl -sS https://api.yieldagentx402.app/api/whitelabel/requirements
+curl -sS https://api.yieldagentx402.app/api/public/hubs
+```
 
 ---
 
@@ -106,7 +150,8 @@ The repo and live deployment currently expose:
 - solver discovery and registration surfaces
 - multichain compatibility workers and adapters
 - TEE report / verifier integration surfaces
-- DAO governance endpoints
+- **DAO governance** — public `GET /api/dao/*` surfaces plus authorized proposal and vote writes
+- **Whitelabel hub program** — partner-branded hubs (`/api/whitelabel/*`, `/api/public/hubs`), stake-gated tiers, kill/restore, audit and webhooks
 - live NEAR operator infrastructure and validator-backed credibility
 
 Adapter totals and enabled/live counts should always be read from the live health endpoint rather than hardcoded into static copy.
@@ -144,6 +189,8 @@ This is why the project is framed as a **verifiable execution market** rather th
 - solver discovery and registration
 - settlement and proof routes
 - TEE report / verifier integration
+- **DAO governance** (`/api/dao/*`) — public reads; admin/user-authenticated writes
+- **Whitelabel hub** (`/api/whitelabel/*`, `/api/public/hubs`) — partner hubs, tiers, kill/restore, audit
 
 ### Execution model
 - client or agent creates an intent
