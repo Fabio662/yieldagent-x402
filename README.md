@@ -63,7 +63,7 @@ Options: `--skip-verify`, `--skip-secrets`
 | stx402 | stacks.yieldagentx402.app |
 | shade-agent | shade-agent.yieldagentx402.app (TEE) / localhost:3000 (local) |
 
-### Intent execution network (yieldagentx402-network — Baseline #11)
+### Intent execution network (yieldagentx402-network)
 
 | Worker | Env key | Domain |
 |--------|---------|--------|
