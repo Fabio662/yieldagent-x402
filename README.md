@@ -108,7 +108,7 @@ Options: `--skip-verify`, `--skip-secrets`
 ### Swap Aggregators (11 live)
 | Aggregator | Chain | Notes |
 |------------|-------|-------|
-| **1inch** | EVM | Classic v6 + Fusion Mode (quoter → sign → relayer) |
+| **AllBridge** | Multi | EVM ↔ Stacks ↔ Solana ↔ NEAR — USDC/USDT/STX/sBTC, no API key required |
 | **Jupiter** | Solana | Quote + swap via Solana intents |
 | **Cetus** | Sui | Cetus Aggregator / Tide — USDC + FUSD pairs |
 | **Rubic** | Multi | Rubic.exchange API v2 quoteBest |
@@ -124,7 +124,7 @@ Options: `--skip-verify`, `--skip-secrets`
 | Chain | Adapters |
 |-------|----------|
 | **Ethereum** | Lido, bETH, Rocket Pool, Mantle, FraxETH, Swell, Renzo, EtherFi, EigenLayer |
-| **EVM / Multi** | Euler, Aave, Silo, Katana, TheVault, Secured, Usual, Ethena, Curve, Bedrock, Compound V3, Convex, Pendle, Yearn, Beefy, Solv, Rubic, OpenOcean, 1inch, LayerZero, Relay, Gas.zip |
+| **EVM / Multi** | Euler, Aave, Silo, Katana, TheVault, Secured, Usual, Ethena, Curve, Bedrock, Compound V3, Convex, Pendle, Yearn, Beefy, Solv, Rubic, OpenOcean, AllBridge, LayerZero, Relay, Gas.zip |
 | **Stacks** | Zest, Hermetica, LISA, StackingDAO, ALEX, Velar, Arkadiko |
 | **Solana** | Kamino, Jupiter, Marinade, Jito |
 | **Sui** | Suilend, Navi, Scallop, Volo, Haedal, Cetus |
