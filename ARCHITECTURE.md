@@ -1,7 +1,32 @@
 # YieldAgent — Full Architecture Flow
 
 > Traced from source (`yieldagent-api-gateway/`, `agent402/`, `tee-signer/`, compat workers).
-> Updated 2026-03-25.
+> Updated 2026-04-05.
+
+## Platform Map
+
+| Layer | Worker / Platform | Domain |
+|-------|-------------------|--------|
+| **Landing / Docs** | `yieldagent-landing` | `yieldagentx402.app` |
+| **Gateway / API** | `yieldagent-api-gateway` | `api.yieldagentx402.app` |
+| **Agent Brain** | `agent402` | `agent.yieldagentx402.app` |
+| **TEE** | **NEAR AI Cloud** (`cloud.near.ai`) — Intel TDX hardware enclave | — |
+| **TEE Transport** | `tee-signer` | `tee-signer.yieldagentx402.app` |
+| **TEE Enclave** | `shade-agent` on NEAR AI Cloud | `shade-agent.yieldagentx402.app` |
+
+```
+Landing (yieldagentx402.app)
+        ↓
+Gateway (api.yieldagentx402.app)
+        ↓
+Agent Brain (agent.yieldagentx402.app)
+        ↓
+TEE Transport (tee-signer.yieldagentx402.app)  ← Cloudflare Worker
+        ↓
+NEAR AI Cloud TEE (cloud.near.ai)              ← Hardware-attested enclave (Intel TDX)
+  └─ shade-agent (shade-agent.yieldagentx402.app)
+        └─ NEAR MPC (v1.mpc-signer.near)       ← Key never leaves MPC network
+```
 
 **Full registry + discovery (on-chain IDs, payTo, scanners, CDP Bazaar, Flippt/Kite/0G, deploy index):** [`X402_ACTIVATION/REGISTRY_AND_DISCOVERY_FULL_SCOPE.md`](X402_ACTIVATION/REGISTRY_AND_DISCOVERY_FULL_SCOPE.md)
 
@@ -14,7 +39,7 @@
 | **yieldagent-api-gateway** | `api.yieldagentx402.app` | Public API, x402 gate, intents DO, adapters, cron |
 | **agent402** | `agent.yieldagentx402.app` | TEE brain: x402 verify, settlement, attestation, intent/LZ verify |
 | **tee-signer** | `tee-signer.yieldagentx402.app` | Managed wallets, signing (EVM/Stacks/etc.), Chain Signatures x402 |
-| **shade-agent** | `shade-agent.yieldagentx402.app` (TEE) / `localhost:3000` (local) | NEAR Shade Agent — chain-signature signing via Phala TDX TEE. Two modes: **human/local** (whitelist, dev) and **autonomous/TEE** (attestation, prod). See `shade-agent/README.md` |
+| **shade-agent** | `shade-agent.yieldagentx402.app` (TEE) / `localhost:3000` (local) | NEAR Shade Agent — chain-signature signing via **NEAR AI Cloud TEE** (Intel TDX). Two modes: **human/local** (whitelist, dev) and **autonomous/TEE** (attestation, prod). See `shade-agent/README.md` |
 | **yieldagent-landing** | `yieldagentx402.app` | Landing page / docs |
 | **\*-compat-worker** (x8) | `{chain}-compat.yieldagentx402.app` | Edge adapters: Solana, Sui, Starknet, Tron, BNB, XRPL, NEAR, Stacks |
 | **stacks-x402-worker** | `stacks.yieldagentx402.app` | Stacks-native x402 compat |
@@ -85,7 +110,7 @@ CLIENT (browser, AI agent, or Casper auto-pay bot)
 │      }                                                          │
 │    TEE-SIGNER:                                                  │
 │      chain-signatures.ts → signX402Payment()                    │
-│        ├─ HTTP: Shade Agent (Phala TEE) → MPC request_signature │
+│        ├─ HTTP: Shade Agent (NEAR AI Cloud TEE) → MPC request_signature │
 │        └─ SDK fallback: @neardefi/shade-agent-js                │
 │      Derives EVM address from NEAR account + derivation path    │
 │      Returns: { signature, address, path }                      │
@@ -327,7 +352,7 @@ CLIENT (or auto-solver)
   │ Execution (if approved):
   │   → Gateway builds sign payload
   │   → POST /api/wallets/sign  (see Flow C)
-  │   → TEE signer gates: PHALA_TEE_ENABLED, PHALA_TEE_MODE
+  │   → TEE signer gates: PHALA_TEE_ENABLED, PHALA_TEE_MODE  (NEAR AI Cloud TEE)
   │   → Signed message broadcast to bridge protocol
   │
   │ Verification:
@@ -431,11 +456,11 @@ Near-auto-bidder (separate worker): `*/15 * * * *`
 | `INTERNAL_KEY_VERIFY` | Gateway + Agent402 | Gateway → agent402 per-surface auth (preferred) |
 | `INTERNAL_KEY_SIGN` | Gateway + TEE-signer + compat workers | Gateway → tee-signer per-surface auth (preferred) |
 | `INTERNAL_SHARED_KEY` | All workers | Fallback service-to-service auth (compat) |
-| `NEAR_AI_API_KEY` | Agent402 | NEAR AI Cloud attestation |
+| `NEAR_AI_API_KEY` | Agent402 | NEAR AI Cloud TEE attestation |
 | `CHAIN_SIGNATURES_ENABLED` | TEE-signer | Gates Chain Signatures x402 signing |
 | `CHAIN_SIGNATURES_X402_ENABLED` | Gateway | Gates product use of Casper auto-pay |
 | `ADMIN_KEY` | Gateway | Full admin access |
-| `TEE_PLATFORM_SIGN_URL` | Gateway | Phala TEE live signing endpoint |
+| `TEE_PLATFORM_SIGN_URL` | Gateway | NEAR AI Cloud TEE live signing endpoint |
 
 ---
 

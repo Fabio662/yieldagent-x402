@@ -25,7 +25,7 @@ The `shade-agent/` worker is the TEE-backed NEAR agent that underpins chain-sign
 | Mode | How it works | When to use |
 |------|-------------|-------------|
 | **Human / Local** | Runs on your machine, no TEE attestation, uses an account whitelist — a human is present to approve actions | Development and testing |
-| **Autonomous / TEE** | Runs on Phala Cloud (Intel TDX), produces cryptographic attestation, self-registers on boot, re-registers every 6 days — no human required per action | Production |
+| **Autonomous / TEE** | Runs on **NEAR AI Cloud** (Intel TDX), produces cryptographic attestation, self-registers on boot, re-registers every 6 days — no human required per action | Production |
 
 Switch modes by setting `environment` in `shade-agent/deployment.yaml` to `local` or `TEE`.
 
@@ -147,9 +147,18 @@ Options: `--skip-verify`, `--skip-secrets`
 > Live count: `GET https://api.yieldagentx402.app/health` → `summary.adapters.total`
 
 ### TEE / Signing
-- **Phala CVM (Intel TDX)** — hardware-attested enclave; resolves controlClass, validates policy, calls NEAR MPC
+
+```
+tee-signer.yieldagentx402.app   (Cloudflare Worker — transport + auth)
+        ↓
+NEAR AI Cloud TEE (cloud.near.ai — Intel TDX hardware enclave)
+  └─ shade-agent  (shade-agent.yieldagentx402.app)
+        └─ NEAR MPC  (v1.mpc-signer.near — key never leaves MPC network)
+```
+
+- **NEAR AI Cloud TEE** — hardware-attested Intel TDX enclave; resolves controlClass, validates policy, calls NEAR MPC. Platform: `cloud.near.ai`
 - **NEAR Chain Signatures MPC** — `v1.mpc-signer.near`; secp256k1 / ed25519; key never leaves MPC network
-- **tee-signer** (Cloudflare Worker) — transport layer; forwards to Phala `/api/execute`
+- **tee-signer** (Cloudflare Worker) — transport layer; auth gate + rate limit; forwards to NEAR AI Cloud TEE `/api/execute`
 
 ---
 
