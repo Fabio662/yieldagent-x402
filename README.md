@@ -162,6 +162,17 @@ NEAR AI Cloud TEE (cloud.near.ai — Intel TDX hardware enclave)
 
 ---
 
+## Stake with Us
+
+**Active NEAR Validator** — `yieldagentx402.pool.near`
+Metapool Cohort #3 · ~49,600 NEAR staked · Intel TDX attested operator
+
+Delegate NEAR and earn staking rewards while supporting the same infrastructure that powers YieldAgent's TEE signing and NEAR MPC chain signatures.
+
+→ [Stake via Metapool](https://metapool.app) · [Validator on NEAR Explorer](https://nearblocks.io/accounts/yieldagentx402.pool.near)
+
+---
+
 ## Key docs
 
 - `SOURCE_POLICY.md` — Canonical source rules; approved fixes only
