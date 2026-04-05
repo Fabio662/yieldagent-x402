@@ -162,6 +162,35 @@ NEAR AI Cloud TEE (cloud.near.ai — Intel TDX hardware enclave)
 
 ---
 
+## x402 Payment Rails (14 native chains)
+
+Pay-per-use micropayment — no staking required. Customers pay from their native chain wallet.
+
+| Network | Asset | Address |
+|---------|-------|---------|
+| **Base** | USDC | `0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1` |
+| **Ethereum** | USDC | `0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1` |
+| **Stacks** | STX | `SPNTEKCYS2PWDKH92WFTAT66N0NJG45D01G7T9YR` |
+| **NEAR** | NEAR | `faircat1401.near` |
+| **Solana** | USDC | `DyJjjHQyd8NYZeXXhSABpFWPn4PE98UDv4oLtaxzJuiE` |
+| **BNB Chain** | BNB | `0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1` |
+| **Sui** | SUI | `0x986653e83fd9ab410ecebbcc3b5c5d1c44a8b75ba31827895e033e0e66928e98` |
+| **Tron** | USDT | `TJoPdK4Y8D4zBF9R7NUkoEzYPwgC1QtcCu` |
+| **XRP Ledger** | XRP | `rUGEhCHEsF9fPWue1ukLtT6EHNVUoV56G9` |
+| **Starknet** | ETH | `0x003a4e08a629315fba6f5400d7e28cdc00adb600846311bc6d59b31570906a21` |
+| **Starknet** | BTC | `bc1qx3kft7jfdmcw5lldq8wa4qdu3ulge9tjpt6epa` |
+| **Rootstock** | RUSDT | `0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1` |
+| **Filecoin** | FIL | `f1lp5sykac26p7lsw63j4ts7paiopdsw2c2bfvcha` |
+| **Filecoin EVM** | FIL | `0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1` |
+
+Discovery: `GET /.well-known/x402` returns all active rails with CAIP-2 network IDs, amounts, and payment schemas.
+
+Customer flow: `POST /api/adapters/quote` → 402 → pay native → retry with `X-PAYMENT` header → live quote.
+
+→ [Get Started](https://yieldagentx402.app/apply)
+
+---
+
 ## Stake with Us
 
 **Active NEAR Validator** — `yieldagentx402.pool.near`
