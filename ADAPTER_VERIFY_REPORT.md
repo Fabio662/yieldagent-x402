@@ -91,7 +91,7 @@ counterparts during deploy. Their quote/plan URLs are set as **Cloudflare secret
 
 ## Findings
 
-1. All 86 adapters are enabled, live-ready, and serving correctly.
+1. All 90 adapters are enabled, live-ready, and serving correctly.
 2. Charms and LayerZero require their `ADAPTER_*_QUOTE_URL` / `ADAPTER_*_PLAN_URL`
    set as **Cloudflare secrets** (wrangler silently drops them due to bridge var conflict).
 3. Gateway and agent are operational.
