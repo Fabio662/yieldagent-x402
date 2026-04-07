@@ -109,7 +109,7 @@ Options: `--skip-verify`, `--skip-secrets`
 ### Swap Aggregators (12 live)
 | Aggregator | Chain | Notes |
 |------------|-------|-------|
-| **1inch** | EVM | Aggregator — gateway `oneinch-evm` / agent402 `/adapters/oneinch/*`; `ADAPTER_ONEINCH_*` in [`gateway-clean-deploy/wrangler.jsonc`](gateway-clean-deploy/wrangler.jsonc) |
+| **1inch** | EVM | Aggregator — classic + **Fusion** (where deployment enables it); gateway `oneinch-evm` / agent402 `/adapters/oneinch/*`; `ADAPTER_ONEINCH_*` in [`gateway-clean-deploy/wrangler.jsonc`](gateway-clean-deploy/wrangler.jsonc). **AllBridge** (row below) is separate — both are live. |
 | **AllBridge** | Multi | EVM ↔ Stacks ↔ Solana ↔ NEAR — USDC/USDT/STX/sBTC, no API key required |
 | **Jupiter** | Solana | Quote + swap via Solana intents |
 | **Cetus** | Sui | Cetus Aggregator / Tide — USDC + FUSD pairs |

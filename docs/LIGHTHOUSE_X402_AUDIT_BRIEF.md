@@ -4,6 +4,8 @@
 
 **Scope:** No secret values appear in this file. Operators hold `LIGHTHOUSE_API_KEY` in Cloudflare only.
 
+**Out of scope here:** Swap / DEX adapter inventory (e.g. **1inch** vs **AllBridge** vs OpenOcean). Those are separate product surfaces — see [`README.md`](../README.md) § Adapters (both **1inch** and **AllBridge** are documented as live; AllBridge does not replace 1inch).
+
 **Operator verification (upload → CID → gateway):** see [`docs/LIGHTHOUSE_E2E_VERIFICATION.md`](./LIGHTHOUSE_E2E_VERIFICATION.md).
 
 ---

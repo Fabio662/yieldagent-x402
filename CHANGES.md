@@ -4,6 +4,8 @@
 
 - **Docs — x402 discovery counts:** [`docs/X402_DISCOVERY.md`](docs/X402_DISCOVERY.md) documents live `/.well-known/x402` **resource** totals (baseline 76 / 42 skills / 34 non-skill), verification `curl` + Python snippet, and a short checklist to refresh **README** when discovery changes. [`README.md`](README.md) x402 section links to it; Lighthouse bullet expanded for `filecoinProof*` + gateway verify paths; swap aggregators table includes **1inch** (12 live) and EVM/Multi row lists 1inch.
 
+- **Docs — 1inch vs AllBridge:** Clarified in [`README.md`](README.md), [`docs/X402_DISCOVERY.md`](docs/X402_DISCOVERY.md) (*Related*), and [`docs/LIGHTHOUSE_X402_AUDIT_BRIEF.md`](docs/LIGHTHOUSE_X402_AUDIT_BRIEF.md) (*Out of scope*): **1inch** (classic + **Fusion** where enabled, `oneinch-evm` / `ADAPTER_ONEINCH_*`) and **AllBridge** are **both** live; AllBridge is an additional cross-chain path, not a doc-level replacement for 1inch.
+
 ## 2026-04-06
 
 - **Skills catalog sync:** Root [`shared/skills-catalog.js`](shared/skills-catalog.js) aligned with [`agent402-clean-deploy/shared/skills-catalog.js`](agent402-clean-deploy/shared/skills-catalog.js) so anything importing repo-root `shared/` matches the 42-skill gateway/agent402 clean deploy.

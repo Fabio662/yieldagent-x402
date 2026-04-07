@@ -35,6 +35,10 @@ Implementation notes:
 - Skill paths come from [`shared/skills-catalog.js`](../shared/skills-catalog.js) via [`gateway-clean-deploy/src/agent-skills.js`](../gateway-clean-deploy/src/agent-skills.js) and env filters (`SKILL_LIFECYCLE_MIN`, allow/deny lists).
 - Non-skill entries include adapter quote/plan, yields, federation, intents, bridge helpers, market routes, etc., subject to the gateway’s **402-only** resource filter.
 
+## Related (not duplicated here)
+
+- **Swap / bridge adapters:** Which aggregators are live (**1inch** including Fusion-capable deployment paths, **AllBridge**, OpenOcean, etc.) is documented in [`README.md`](../README.md) § *Adapters & Integrations*. **1inch and AllBridge are both live** — AllBridge adds cross-chain lanes; it is not a wholesale replacement for 1inch in the public docs or gateway adapter registry.
+
 ## Doc maintenance checklist
 
 When you ship a gateway change that affects discovery:
