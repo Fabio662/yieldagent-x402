@@ -2,9 +2,17 @@
 
 ## 2026-04-08
 
+- **tee-signer `/health` vs “degraded”:** [`tee-signer/worker.ts`](tee-signer/worker.ts) — when there is no `signed:*` KV activity in 24h, **`probeTeeLiveness`** still marks the service live by probing **`TEE_REPORT_URL`** (attestation endpoint); success is cached in KV (`tee-liveness-probe`, 30m TTL). **`status` / `statusBadge`** go **`ok` / `live-verified`** if either path passes; **`recentSignedExecution`** stays the narrow KV-only flag. Redeploy **tee-signer** for production to pick this up.
+
+- **Source of truth (Desktop):** Added repo-root [`SOURCE_POLICY.md`](SOURCE_POLICY.md) stating **`/Users/fabianjefferson/Desktop/Baseline #11`** is the authoritative working copy; clarifies `YiedHub V2`, other Desktop trees, and `origin` as backup/mirror roles. [`.cursor/rules/baseline11-canonical-source.mdc`](.cursor/rules/baseline11-canonical-source.mdc) updated to match.
+
+- **Landing tee-signer probe + ops semantics:** [`yieldagent-landing/worker.js`](yieldagent-landing/worker.js) — platform-status and attestation-verifier now probe **`https://tee-signer.yieldagentx402.app`** (override `TEE_SIGNER_HEALTH_URL` in [`yieldagent-landing/wrangler.jsonc`](yieldagent-landing/wrangler.jsonc)) so landing mirrors production gateway TEE host; `platform-status` documents compat-worker **admin 403** and **`/api/demo/run` 429** as intentional. [`scripts/stress-gateway 4.sh`](scripts/stress-gateway%204.sh) header notes the same expectations.
+
 - **Docs — x402 discovery counts:** [`docs/X402_DISCOVERY.md`](docs/X402_DISCOVERY.md) documents live `/.well-known/x402` **resource** totals (baseline 76 / 42 skills / 34 non-skill), verification `curl` + Python snippet, and a short checklist to refresh **README** when discovery changes. [`README.md`](README.md) x402 section links to it; Lighthouse bullet expanded for `filecoinProof*` + gateway verify paths; swap aggregators table includes **1inch** (12 live) and EVM/Multi row lists 1inch.
 
 - **Docs — 1inch vs AllBridge:** Clarified in [`README.md`](README.md), [`docs/X402_DISCOVERY.md`](docs/X402_DISCOVERY.md) (*Related*), and [`docs/LIGHTHOUSE_X402_AUDIT_BRIEF.md`](docs/LIGHTHOUSE_X402_AUDIT_BRIEF.md) (*Out of scope*): **1inch** (classic + **Fusion** where enabled, `oneinch-evm` / `ADAPTER_ONEINCH_*`) and **AllBridge** are **both** live; AllBridge is an additional cross-chain path, not a doc-level replacement for 1inch.
+
+- **Landing TEE vs health consistency:** [`yieldagent-landing/worker.js`](yieldagent-landing/worker.js) — `/api/public/security-posture`, `/api/public/platform-status`, `/api/public/custody-model`, `/api/public/signer-policy-spec`, and tee verification checklist copy now separate **edge tee-signer `mode`** (live pipeline vs dry-run) from **upstream Intel TDX / Shade / MPC**; removed misleading “no TDX / dry-run Worker = no hardware TEE” implication; references **gateway `teeLiveVerified`** where relevant. Redeploy landing for public JSON.
 
 ## 2026-04-06
 
