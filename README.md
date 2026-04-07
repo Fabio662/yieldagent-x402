@@ -85,6 +85,7 @@ Options: `--skip-verify`, `--skip-secrets`
 - **Tron:** Run `node tron-agent-worker/register-8004.mjs` with `TRON_PRIVATE_KEY` / optional `IPFS_CID` — see script header. Registry: `TYmmnmgkxteBvH8u8LAfb8sCcs1Eph2tk2` ([TronScan](https://tronscan.org/#/contract/TYmmnmgkxteBvH8u8LAfb8sCcs1Eph2tk2)).
 - **Base (EIP-8004):** `agentRegistry` = `eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`, **`agentId: 21702`**. [Registry on Basescan](https://basescan.org/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432) · [NFT view #21702](https://basescan.org/nft/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/21702) (verify against contract ABI).
 - **Public write-up:** [yieldagentx402.app/verification#content-addressing](https://yieldagentx402.app/verification#content-addressing) (after landing deploy).
+- **Settlement receipts (Lighthouse / IPFS / Filecoin disclosure):** When `LIGHTHOUSE_API_KEY` is set on agent402, each successful verify (direct `POST https://agent.yieldagentx402.app/x402/verify` or via gateway `POST /api/x402/verify`) can pin a small JSON receipt via Lighthouse **`POST https://upload.lighthouse.storage/api/v0/add`** (multipart `file`). Response JSON includes `ipfsProofCid` / `ipfsProofUrl` and alias fields **`filecoinProofCid` / `filecoinProofUrl`** (same CID; Filecoin-backed storage narrative); headers **`x-ipfs-proof-cid`** and **`x-filecoin-proof-cid`** (gateway mirrors on proxy). Pinning is **best-effort and non-blocking** if storage fails. Details: [`docs/LIGHTHOUSE_X402_AUDIT_BRIEF.md`](docs/LIGHTHOUSE_X402_AUDIT_BRIEF.md).
 
 ## Adapters & Integrations
 
@@ -105,9 +106,10 @@ Options: `--skip-verify`, `--skip-secrets`
 | **Axelar** | ✅ live | Axelar GMP bridge | ETH, Base, Arbitrum, Optimism, Polygon, Avalanche, BNB — axlUSDC/axlUSDT/axlETH — `ADAPTER_AXELAR_*` |
 | **Rubic** | ✅ live | Cross-chain swap/bridge aggregator | Multi — routes via LayerZero, Stargate, etc. — `ADAPTER_RUBIC_*` |
 
-### Swap Aggregators (11 live)
+### Swap Aggregators (12 live)
 | Aggregator | Chain | Notes |
 |------------|-------|-------|
+| **1inch** | EVM | Aggregator — gateway `oneinch-evm` / agent402 `/adapters/oneinch/*`; `ADAPTER_ONEINCH_*` in [`gateway-clean-deploy/wrangler.jsonc`](gateway-clean-deploy/wrangler.jsonc) |
 | **AllBridge** | Multi | EVM ↔ Stacks ↔ Solana ↔ NEAR — USDC/USDT/STX/sBTC, no API key required |
 | **Jupiter** | Solana | Quote + swap via Solana intents |
 | **Cetus** | Sui | Cetus Aggregator / Tide — USDC + FUSD pairs |
@@ -124,7 +126,7 @@ Options: `--skip-verify`, `--skip-secrets`
 | Chain | Adapters |
 |-------|----------|
 | **Ethereum** | Lido, bETH, Rocket Pool, Mantle, FraxETH, Swell, Renzo, EtherFi, EigenLayer |
-| **EVM / Multi** | Euler, Aave, Silo, Katana, TheVault, Secured, Usual, Ethena, Curve, Bedrock, Compound V3, Convex, Pendle, Yearn, Beefy, Solv, Rubic, OpenOcean, AllBridge, LayerZero, Relay, Gas.zip |
+| **EVM / Multi** | Euler, Aave, Silo, Katana, TheVault, Secured, Usual, Ethena, Curve, Bedrock, Compound V3, Convex, Pendle, Yearn, Beefy, Solv, Rubic, 1inch, OpenOcean, AllBridge, LayerZero, Relay, Gas.zip |
 | **Stacks** | Zest, Hermetica, LISA, StackingDAO, ALEX, Velar, Arkadiko |
 | **Solana** | Kamino, Jupiter, Marinade, Jito |
 | **Sui** | Suilend, Navi, Scallop, Volo, Haedal, Cetus |
@@ -183,7 +185,9 @@ Pay-per-use micropayment — no staking required. Customers pay from their nativ
 | **Filecoin** | FIL | `f1lp5sykac26p7lsw63j4ts7paiopdsw2c2bfvcha` |
 | **Filecoin EVM** | FIL | `0x97d794dB5F8B6569A7fdeD9DF57648f0b464d4F1` |
 
-Discovery: `GET /.well-known/x402` returns all active rails with CAIP-2 network IDs, amounts, and payment schemas.
+Discovery: `GET https://api.yieldagentx402.app/.well-known/x402` returns payable resource URLs (string array), payment `accepts`, and CAIP-2 rails. **Resource counts drift with deploys** — verify live before citing numbers in docs:
+
+- **Baseline (verify before publishing):** ~**76** total resources, **42** skill paths (`/api/skills/…`), **34** non-skill. Re-check with the curl snippet in [`docs/X402_DISCOVERY.md`](docs/X402_DISCOVERY.md).
 
 Customer flow: `POST /api/adapters/quote` → 402 → pay native → retry with `X-PAYMENT` header → live quote.
 
@@ -204,6 +208,7 @@ Delegate NEAR and earn staking rewards while supporting the same infrastructure 
 
 ## Key docs
 
+- `docs/X402_DISCOVERY.md` — **x402 `/.well-known` resource counts**; curl to verify live totals (update when discovery changes)
 - `SOURCE_POLICY.md` — Canonical source rules; approved fixes only
 - `YIELDAGENT_DEPLOY_READY_BUNDLE.md` — Full remediation bundle
 - `WORKERS_VERIFICATION.md` — Worker verification (public fleet)
