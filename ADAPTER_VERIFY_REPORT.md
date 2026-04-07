@@ -9,9 +9,9 @@
 
 | Metric | Value |
 |--------|-------|
-| **Total adapters** | 89 |
-| **Enabled** | 89 |
-| **Live-ready** | 89 |
+| **Total adapters** | 90 |
+| **Enabled** | 90 |
+| **Live-ready** | 90 |
 | **Sim-fallback** | 0 |
 | **Mode** | All `live` |
 | **Agent reachable** | Yes (401 on direct call — auth required, expected) |
