@@ -36,7 +36,7 @@ counterparts during deploy. Their quote/plan URLs are set as **Cloudflare secret
 
 ---
 
-## Adapter List (86 total)
+## Adapter List (86 total) all not listed
 
 | Chain | Adapters |
 |-------|----------|
