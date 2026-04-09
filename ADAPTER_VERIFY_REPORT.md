@@ -9,9 +9,9 @@
 
 | Metric | Value |
 |--------|-------|
-| **Total adapters** | 90 |
-| **Enabled** | 90 |
-| **Live-ready** | 90 |
+| **Total adapters** | 111 |
+| **Enabled** | 111 |
+| **Live-ready** | 111 |
 | **Sim-fallback** | 0 |
 | **Mode** | All `live` |
 | **Agent reachable** | Yes (401 on direct call — auth required, expected) |
@@ -36,7 +36,7 @@ counterparts during deploy. Their quote/plan URLs are set as **Cloudflare secret
 
 ---
 
-## Adapter List (86 total) all not listed
+## Adapter List (111 total) all not listed
 
 | Chain | Adapters |
 |-------|----------|
@@ -71,7 +71,7 @@ counterparts during deploy. Their quote/plan URLs are set as **Cloudflare secret
 
 ## Verification
 
-- **Gateway /health** → `adapters.total: 89, liveReady: 89, simFallback: 0`
+- **Gateway /health** → `adapters.total: 111, liveReady: 111, simFallback: 0`
 - **Agent adapter endpoints** → Return 401 (auth required — expected)
 - **Phala CVM** → Running `sha256:3753ba073172...`, all enclave gates tested
 - **tee-signer** → Deployed `f2cf8ce4` @ tee-signer.yieldagentx402.app
@@ -91,7 +91,7 @@ counterparts during deploy. Their quote/plan URLs are set as **Cloudflare secret
 
 ## Findings
 
-1. All 90 adapters are enabled, live-ready, and serving correctly.
+1. All 111 adapters are enabled, live-ready, and serving correctly.
 2. Charms and LayerZero require their `ADAPTER_*_QUOTE_URL` / `ADAPTER_*_PLAN_URL`
    set as **Cloudflare secrets** (wrangler silently drops them due to bridge var conflict).
 3. Gateway and agent are operational.
